@@ -1,0 +1,27 @@
+{
+  "name": "chat-room",
+  "version": "1.0.0",
+  "description": "a chat room application",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gurveerdhindsa/chat-room.git"
+  },
+  "author": "Gurveer Dhindsa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gurveerdhindsa/chat-room/issues"
+  },
+  "homepage": "https://github.com/gurveerdhindsa/chat-room#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "less": "^3.8.1",
+    "nodemon": "^1.18.4",
+    "socket.io": "^2.1.1"
+  }
+}
