@@ -1,17 +1,52 @@
 var socket = io.connect("http://localhost:8080");
-    socket.on("connect", function(data) {
-    socket.emit("join", "Hello server from client");
+
+socket.on("connect", (data) => {
+    socket.emit("join", "ANON");
 });
 
-// listener for 'thread' event, which updates messages
-socket.on("thread", function(data) {
-  $("#thread").append("<li>" + data + "</li>");
+socket.on("message-list", (data, sender) => {
+    $("#message-list").append("<li class='message'><span class='message-sender'>" + sender + ": </span><span class='message-text''>" + data + "</span></li>");
+
+    updateScroll();
 });
 
-// sends message to server, resets & prevents default form action
-$("form").submit(function() {
-  var message = $("#message").val();
-  socket.emit("messages", message);
-  this.reset();
-  return false;
+socket.on("user-status", (user, action) => {
+    switch(action) {
+        case "CONNECT":
+            $("#message-list").append("<li class='message'><span class='user-status'>" + user + " has connected</span></li>");
+            break;
+
+        case "SELF_CONNECT":
+            $("#message-list").append("<li class='message'><span class='user-status'>You have connected</span></li>");
+            break;
+        case "DISCONNECT":
+            $("#message-list").append("<li class='message'><span class='user-status'>A user has disconnected</span></li>");
+            break;
+        default:
+    }
+})
+
+
+//Submitting a message
+$("#message-text").keypress( e => {
+    if(e.which == 13) {
+        var message = $("#message-text").val();
+        socket.emit("messages", message, "ANON", true);
+
+        //Clear the text field
+        document.getElementById('message-text').value = "";
+
+        updateScroll();
+
+        return false;
+    }
 });
+
+function updateScroll () {
+    var element = document.getElementById("message-list");
+    element.scrollTop = element.scrollHeight+10;
+
+    return;
+}
+
+
