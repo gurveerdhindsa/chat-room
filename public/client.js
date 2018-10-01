@@ -1,11 +1,15 @@
 var socket = io.connect("http://localhost:8080");
 
 socket.on("connect", (data) => {
-    socket.emit("join", "ANON");
+    socket.emit("join", "Anonymous");
 });
 
-socket.on("message-list", (data, sender) => {
-    $("#message-list").append("<li class='message'><span class='message-sender'>" + sender + ": </span><span class='message-text''>" + data + "</span></li>");
+socket.on("message-list", (data, sender, isUser) => {
+
+    if (isUser)
+        $("#message-list").append("<li class='message'><span class='message-sender local'>" + sender + ": </span><span class='message-text''>" + data + "</span></li>");
+    else
+        $("#message-list").append("<li class='message'><span class='message-sender'>" + sender + ": </span><span class='message-text''>" + data + "</span></li>");
 
     updateScroll();
 });
@@ -31,7 +35,7 @@ socket.on("user-status", (user, action) => {
 $("#message-text").keypress( e => {
     if(e.which == 13) {
         var message = $("#message-text").val();
-        socket.emit("messages", message, "ANON", true);
+        socket.emit("messages", message, "Anonymous", true);
 
         //Clear the text field
         document.getElementById('message-text').value = "";

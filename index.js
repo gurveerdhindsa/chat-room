@@ -28,8 +28,8 @@ io.on("connection", client => {
   })
 
   client.on("messages", (data, sender) => {
-    client.emit("message-list", data, sender);
-    client.broadcast.emit("message-list", data, sender);
+    client.emit("message-list", data, sender, true);
+    client.broadcast.emit("message-list", data, sender, false);
   });
 });
 
