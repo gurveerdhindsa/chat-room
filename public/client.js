@@ -1,11 +1,12 @@
 var socket = io.connect("http://localhost:8080");
 
+var user = document.cookie.split('=')[1];
+
 socket.on("connect", (data) => {
-    socket.emit("join", "Anonymous");
+    socket.emit("join", user);
 });
 
 socket.on("message-list", (data, sender, isUser) => {
-
     if (isUser)
         $("#message-list").append("<li class='message'><span class='message-sender local'>" + sender + ": </span><span class='message-text''>" + data + "</span></li>");
     else
@@ -19,7 +20,6 @@ socket.on("user-status", (user, action) => {
         case "CONNECT":
             $("#message-list").append("<li class='message'><span class='user-status'>" + user + " has connected</span></li>");
             break;
-
         case "SELF_CONNECT":
             $("#message-list").append("<li class='message'><span class='user-status'>You have connected</span></li>");
             break;
@@ -28,14 +28,18 @@ socket.on("user-status", (user, action) => {
             break;
         default:
     }
-})
+});
+
+socket.on("redirect", path => {
+    window.top.location.href = path;
+});
 
 
 //Submitting a message
 $("#message-text").keypress( e => {
     if(e.which == 13) {
         var message = $("#message-text").val();
-        socket.emit("messages", message, "Anonymous", true);
+        socket.emit("messages", message, user, true);
 
         //Clear the text field
         document.getElementById('message-text').value = "";

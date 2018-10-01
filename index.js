@@ -3,28 +3,36 @@ var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io")(server);
 
-app.get("/", (req, res, next) => {
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + "/public/register.html");
+});
+
+app.get("/chat", (req, res, next) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
 app.use(express.static("public"));
 
-var clients = 0;
+var clients = [];
 
 io.on("connection", client => {
-
   client.on("join", user => {
-    clients++;
-    console.log("Client connected. Total clients: ", clients);
     client.emit("user-status", user, "SELF_CONNECT");
     client.broadcast.emit("user-status", user, "CONNECT");
+
+    if (clients.indexOf(user) > -1) {
+        client.emit("redirect", "/");
+    }
+    clients.push(user);
   });
 
   client.on("disconnect", user => {
-    clients--;
-    console.log("Client disconnected. Total clients: ", clients);
     client.emit("user-status", user, "DISCONNECT");
     client.broadcast.emit("user-status", user, "DISCONNECT");
+
+    var i = clients.indexOf(user);
+    if (i != 1)
+        clients.splice(i, 1);
   })
 
   client.on("messages", (data, sender) => {
