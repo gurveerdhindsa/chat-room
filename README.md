@@ -3,7 +3,7 @@
 
 # chat-room
 
->A chat room
+> A simple chat room application using web sockets
 
 ##  Installation
 > Install npm packages
@@ -20,7 +20,7 @@ npm start
 ```
 
 ##  Tech stack
-- Node.js
+- Node.js / Express.js
 - Socket.IO
 - jQuery
 - Less
